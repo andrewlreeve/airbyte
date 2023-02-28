@@ -1,0 +1,105 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "ID": {
+            "type": ["null", "string"]
+        },
+        "Name": {
+            "type": ["null", "string"]
+        },
+        "Status": {
+            "type": ["null", "string"]
+        },
+        "Currency": {
+            "type": ["null", "string"]
+        },
+        "PaymentTerm": {
+            "type": ["null", "string"]
+        },
+        "AccountReceivable": {
+            "type": ["null", "string"]
+        },
+        "RevenueAccount": {
+            "type": ["null", "string"]
+        },
+        "TaxRule": {
+            "type": ["null", "string"]
+        },
+        "PriceTier": {
+            "type": ["null", "string"]
+        },
+        "Carrier": {
+            "type": ["null", "string"]
+        },
+        "SalesRepresentative": {
+            "type": ["null", "string"]
+        },
+        "Location": {
+            "type": ["null", "string"]
+        },
+        "Discount": {
+            "type": ["null", "number"]
+        },
+        "Comments": {
+            "type": ["null", "string"]
+        },
+        "TaxNumber": {
+            "type": ["null", "string"]
+        },
+        "CreditLimit": {
+            "type": ["null", "number"]
+        },
+        "Tags": {
+            "type": ["null", "string"]
+        },
+        "AttributeSet": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute1": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute2": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute3": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute4": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute5": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute6": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute7": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute8": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute9": {
+            "type": ["null", "string"]
+        },
+        "AdditionalAttribute10": {
+            "type": ["null", "string"]
+        },
+        "LastModifiedOn": {
+            "type": ["null", "string"]
+        },
+        "IsOnCreditHold": {
+            "type": ["null", "boolean"]
+        },
+        "ProductPrices": {
+            "type": ["null", "array"]
+        },
+        "Addresses": {
+            "type": ["null", "array"]
+        },
+        "Contacts": {
+            "type": ["null", "array"]
+        }
+    }
+}
