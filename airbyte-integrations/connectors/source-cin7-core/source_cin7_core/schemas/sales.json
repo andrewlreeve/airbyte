@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "SaleID": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "OrderNumber": {
+      "type": ["string", "null"]
+    },
+    "Status": {
+      "type": ["string", "null"]
+    },
+    "OrderDate": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "InvoiceDate": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "Customer": {
+      "type": ["string", "null"]
+    },
+    "CustomerID": {
+      "type": ["string", "null"],
+      "format": "uuid"
+    },
+    "InvoiceNumber": {
+      "type": ["string", "null"]
+    },
+    "CustomerReference": {
+      "type": ["string", "null"]
+    },
+    "InvoiceAmount": {
+      "type": ["number", "null"]
+    },
+    "PaidAmount": {
+      "type": ["number", "null"]
+    },
+    "InvoiceDueDate": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "ShipBy": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "BaseCurrency": {
+      "type": ["string", "null"]
+    },
+    "CustomerCurrency": {
+      "type": ["string", "null"]
+    },
+    "CreditNoteNumber": {
+      "type": ["string", "null"]
+    },
+    "Updated": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "QuoteStatus": {
+      "type": ["string", "null"]
+    },
+    "OrderStatus": {
+      "type": ["string", "null"]
+    },
+    "CombinedPickingStatus": {
+      "type": ["string", "null"]
+    },
+    "CombinedPackingStatus": {
+      "type": ["string", "null"]
+    },
+    "CombinedShippingStatus": {
+      "type": ["string", "null"]
+    },
+    "FulFilmentStatus": {
+      "type": ["string", "null"]
+    },
+    "CombinedInvoiceStatus": {
+      "type": ["string", "null"]
+    },
+    "CreditNoteStatus": {
+      "type": ["string", "null"]
+    },
+    "CombinedPaymentStatus": {
+      "type": ["string", "null"]
+    },
+    "Type": {
+      "type": ["string", "null"]
+    },
+    "CombinedTrackingNumbers": {
+      "type": ["string", "null"]
+    },
+    "SourceChannel": {
+      "type": ["string", "null"]
+    },
+    "ExternalID": {
+      "type": ["string", "null"]
+    },
+    "OrderLocationID": {
+      "type": ["string", "null"]
+    }
+  }
+}
+

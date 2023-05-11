@@ -1,0 +1,248 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "ID": {
+            "type": "string",
+            "format": "uuid"
+        },
+        "SKU": {
+            "type": ["string", "null"]
+        },
+        "Name": {
+            "type": ["string", "null"]
+        },
+        "Category": {
+            "type": ["string", "null"]
+        },
+        "Brand": {
+            "type": ["string", "null"]
+        },
+        "Type": {
+            "type": ["string", "null"]
+        },
+        "CostingMethod": {
+            "type": ["string", "null"]
+        },
+        "DropShipMode": {
+            "type": ["string", "null"]
+        },
+        "DefaultLocation": {
+            "type": ["string", "null"]
+        },
+        "Length": {
+            "type": ["number", "null"]
+        },
+        "Width": {
+            "type": ["number", "null"]
+        },
+        "Height": {
+            "type": ["number", "null"]
+        },
+        "Weight": {
+            "type": ["number", "null"]
+        },
+        "CartonLength": {
+            "type": ["number", "null"]
+        },
+        "CartonWidth": {
+            "type": ["number", "null"]
+        },
+        "CartonHeight": {
+            "type": ["number", "null"]
+        },
+        "CartonQuantity": {
+            "type": ["number", "null"]
+        },
+        "CartonInnerQuantity": {
+            "type": ["number", "null"]
+        },
+        "UOM": {
+            "type": ["string", "null"]
+        },
+        "WeightUnits": {
+            "type": ["string", "null"]
+        },
+        "DimensionsUnits": {
+            "type": ["string", "null"]
+        },
+        "Barcode": {
+            "type": ["string", "null"]
+        },
+        "MinimumBeforeReorder": {
+            "type": ["number", "null"]
+        },
+        "ReorderQuantity": {
+            "type": ["number", "null"]
+        },
+        "PriceTier1": {
+            "type": ["number", "null"]
+        },
+        "PriceTier2": {
+            "type": ["number", "null"]
+        },
+        "PriceTier3": {
+            "type": ["number", "null"]
+        },
+        "PriceTier4": {
+            "type": ["number", "null"]
+        },
+        "PriceTier5": {
+            "type": ["number", "null"]
+        },
+        "PriceTier6": {
+            "type": ["number", "null"]
+        },
+        "PriceTier7": {
+            "type": ["number", "null"]
+        },
+        "PriceTier8": {
+            "type": ["number", "null"]
+        },
+        "PriceTier9": {
+            "type": ["number", "null"]
+        },
+        "PriceTier10": {
+            "type": ["number", "null"]
+        },
+        "PriceTiers": {
+            "type": ["object", "null"]
+        },
+        "AverageCost": {
+            "type": ["number", "null"]
+        },
+        "ShortDescription": {
+            "type": ["string", "null"]
+        },
+        "Description": {
+            "type": ["string", "null"]
+        },
+        "InternalNote": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute1": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute2": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute3": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute4": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute5": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute6": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute7": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute8": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute9": {
+            "type": ["string", "null"]
+        },
+        "AdditionalAttribute10": {
+            "type": ["string", "null"]
+        },
+        "AttributeSet": {
+            "type": ["string", "null"]
+        },
+        "DiscountRule": {
+            "type": ["string", "null"]
+        },
+        "Tags": {
+            "type": ["string", "null"]
+        },
+        "Status": {
+            "type": ["string", "null"]
+        },
+        "StockLocator": {
+            "type": ["string", "null"]
+        },
+        "COGSAccount": {
+            "type": ["string", "null"]
+        },
+        "RevenueAccount": {
+            "type": ["string", "null"]
+        },
+        "ExpenseAccount": {
+            "type": ["string", "null"]
+        },
+        "InventoryAccount": {
+            "type": ["string", "null"]
+        },
+        "PurchaseTaxRule": {
+            "type": ["string", "null"]
+        },
+        "SaleTaxRule": {
+            "type": ["string", "null"]
+        },
+        "LastModifiedOn": {
+            "type": ["string", "null"]
+        },
+        "Sellable": {
+            "type": ["boolean", "null"]
+        },
+        "PickZones": {
+            "type": ["string", "null"]
+        },
+        "BillOfMaterial": {
+            "type": ["boolean", "null"]
+        },
+        "AutoAssembly": {
+            "type": ["boolean", "null"]
+        },
+        "AutoDisassembly": {
+            "type": ["boolean", "null"]
+        },
+        "QuantityToProduce": {
+            "type": ["number", "null"]
+        },
+        "AssemblyInstructionURL": {
+            "type": ["string", "null"]
+        },
+        "AssemblyCostEstimationMethod": {
+            "type": ["string", "null"]
+        },
+        "BOMType": {
+            "type": ["string", "null"]
+        },
+        "HSCode": {
+            "type": ["string", "null"]
+        },
+        "CountryOfOrigin": {
+            "type": ["string", "null"]
+        },
+        "CountryOfOriginCode": {
+            "type": ["string", "null"]
+        },
+        "Suppliers": {
+            "type": ["array", "null"]
+        },
+        "ReorderLevels": {
+            "type": ["array", "null"]
+        },
+        "BillOfMaterialsProducts": {
+            "type": ["array", "null"]
+        },
+        "BillOfMaterialsServices": {
+            "type": ["array", "null"]
+        },
+        "Movements": {
+            "type": ["array", "null"]
+        },
+        "Attachments": {
+            "type": ["array", "null"]
+        },
+        "CustomPrices": {
+            "type": ["array", "null"]
+        }
+    }
+}
+

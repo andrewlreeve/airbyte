@@ -1,0 +1,320 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "ID": {
+            "type": "string",
+            "format": "uuid"
+        },
+        "Customer": {
+            "type": ["string", "null"]
+        },
+        "CustomerID": {
+            "type": ["string", "null"]
+        },
+        "Contact": {
+            "type": ["string", "null"]
+        },
+        "Phone": {
+            "type": ["string", "null"]
+        },
+        "Email": {
+            "type": ["string", "null"]
+        },
+        "DefaultAccount": {
+            "type": ["string", "null"]
+        },
+        "SkipQuote": {
+            "type": ["boolean", "null"]
+        },
+        "BillingAddress": {
+            "type": ["object", "null"]
+        },
+        "ShippingAddress": {
+            "type": ["object", "null"]
+        },
+        "ShippingNotes": {
+            "type": ["string", "null"]
+        },
+        "BaseCurrency": {
+            "type": ["string", "null"]
+        },
+        "CustomerCurrency": {
+            "type": ["string", "null"]
+        },
+        "TaxRule": {
+            "type": ["string", "null"]
+        },
+        "TaxCalculation": {
+            "type": ["string", "null"]
+        },
+        "Terms": {
+            "type": ["string", "null"]
+        },
+        "PriceTier": {
+            "type": ["string", "null"]
+        },
+        "ShipBy": {
+            "type": ["string", "null"],
+            "format": "date-time"
+        },
+        "Location": {
+            "type": ["string", "null"]
+        },
+        "SaleOrderDate": {
+            "type": ["string", "null"],
+            "format": "date-time"
+        },
+        "LastModifiedOn": {
+            "type": ["string", "null"],
+            "format": "date-time"
+        },
+        "Note": {
+            "type": ["string", "null"]
+        },
+        "CustomerReference": {
+            "type": ["string", "null"]
+        },
+        "COGSAmount": {
+            "type": ["number", "null"]
+        },
+        "Status": {
+            "type": ["string", "null"]
+        },
+        "CombinedPickingStatus": {
+            "type": ["string", "null"]
+        },
+        "CombinedPackingStatus": {
+            "type": ["string", "null"]
+        },
+        "CombinedShippingStatus": {
+            "type": ["string", "null"]
+        },
+        "FulFilmentStatus": {
+            "type": ["string", "null"]
+        },
+        "CombinedInvoiceStatus": {
+            "type": ["string", "null"]
+        },
+        "CombinedPaymentStatus": {
+            "type": ["string", "null"]
+        },
+        "CombinedTrackingNumbers": {
+            "type": ["string", "null"]
+        },
+        "Carrier": {
+            "type": ["string", "null"]
+        },
+        "CurrencyRate": {
+            "type": ["number", "null"]
+        },
+        "SalesRepresentative": {
+            "type": ["string", "null"]
+        },
+        "Type": {
+            "type": ["string", "null"]
+        },
+        "SourceChannel": {
+            "type": ["string", "null"]
+        },
+        "ExternalID": {
+            "type": ["string", "null"]
+        },
+        "ServiceOnly": {
+            "type": ["boolean", "null"]
+        },
+        "Quote": {
+            "type": ["object", "null"]
+        },
+        "Order": {
+            "type": ["object", "null"],
+            "properties": {
+                "SaleOrderNumber": {
+                    "type": ["string", "null"]
+                },
+                "Memo": {
+                    "type": ["string", "null"]
+                },
+                "Status": {
+                    "type": ["string", "null"]
+                },
+                "Lines": {
+                    "type": ["array", "null"],
+                    "items": {
+                        "type": ["object", "null"],
+                        "properties": {
+                            "ProductID": {
+                                "type": ["string", "null"],
+                                "format": "uuid"
+                            },
+                            "SKU": {
+                                "type": ["string", "null"]
+                            },
+                            "Name": {
+                                "type": ["string", "null"]
+                            },
+                            "Quantity": {
+                                "type": ["number", "null"]
+                            },
+                            "Price": {
+                                "type": ["number", "null"]
+                            },
+                            "Discount": {
+                                "type": ["number", "null"]
+                            },
+                            "Tax": {
+                                "type": ["number", "null"]
+                            },
+                            "AverageCost": {
+                                "type": ["number", "null"]
+                            },
+                            "TaxRule": {
+                                "type": ["string", "null"]
+                            },
+                            "Comment": {
+                                "type": ["string", "null"]
+                            },
+                            "DropShip": {
+                                "type": ["boolean", "null"]
+                            },
+                            "BackorderQuantity": {
+                                "type": ["number", "null"]
+                            },
+                            "Total": {
+                                "type": ["number", "null"]
+                            }
+                        }
+                    }
+                },
+                "AdditionalCharges": {
+                    "type": ["array", "null"]
+                },
+                "TotalBeforeTax": {
+                    "type": ["number", "null"]
+                },
+                "Tax": {
+                    "type": ["number", "null"]
+                },
+                "Total": {
+                    "type": ["number", "null"]
+                }
+            }
+        },
+        "Fulfilments": {
+            "type": ["array", "null"]
+        },
+        "Invoices": {
+            "type": ["array", "null"]
+        },
+        "CreditNotes": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "TaskID": {
+                        "type": ["string", "null"],
+                        "format": "uuid"
+                    },
+                    "CreditNoteInvoiceNumber": {
+                        "type": ["string", "null"]
+                    },
+                    "Memo": {
+                        "type": ["string", "null"]
+                    },
+                    "Status": {
+                        "type": ["string", "null"]
+                    },
+                    "CreditNoteDate": {
+                        "type": ["string", "null"],
+                        "format": "date-time"
+                    },
+                    "CreditNoteNumber": {
+                        "type": ["string", "null"]
+                    },
+                    "CreditNoteConversionRate": {
+                        "type": ["number", "null"]
+                    },
+                    "Lines": {
+                        "type": ["array", "null"],
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "ProductID": {
+                                    "type": ["string", "null"],
+                                    "format": "uuid"
+                                },
+                                "SKU": {
+                                    "type": ["string", "null"]
+                                },
+                                "Name": {
+                                    "type": ["string", "null"]
+                                },
+                                "Quantity": {
+                                    "type": ["number", "null"]
+                                },
+                                "Price": {
+                                    "type": ["number", "null"]
+                                },
+                                "Discount": {
+                                    "type": ["number", "null"]
+                                },
+                                "Tax": {
+                                    "type": ["number", "null"]
+                                },
+                                "Total": {
+                                    "type": ["number", "null"]
+                                },
+                                "AverageCost": {
+                                    "type": ["number", "null"]
+                                },
+                                "TaxRule": {
+                                    "type": ["string", "null"]
+                                },
+                                "Account": {
+                                    "type": ["string", "null"]
+                                },
+                                "Comment": {
+                                    "type": ["string", "null"]
+                                }
+                            }
+                        }
+                    },
+                    "AdditionalCharges": {
+                        "type": ["array", "null"]
+                    },
+                    "Refunds": {
+                        "type": ["array", "null"]
+                    },
+                    "Restock": {
+                        "type": ["array", "null"]
+                    },
+                    "TotalBeforeTax": {
+                        "type": ["number", "null"]
+                    },
+                    "Tax": {
+                        "type": ["number", "null"]
+                    },
+                    "Total": {
+                        "type": ["number", "null"]
+                    }
+                }
+            }
+        },
+        "ManualJournals": {
+            "type": ["object", "null"]
+        },
+        "AdditionalAttributes": {
+            "type": ["object", "null"]
+        },
+        "Attachments": {
+            "type": ["array", "null"]
+        },
+        "InventoryMovements": {
+            "type": ["array", "null"]
+        },
+        "Transactions": {
+            "type": ["array", "null"]
+        }
+    }
+}
+
