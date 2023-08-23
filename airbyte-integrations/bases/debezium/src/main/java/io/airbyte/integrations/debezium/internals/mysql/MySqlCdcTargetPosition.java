@@ -5,8 +5,10 @@
 package io.airbyte.integrations.debezium.internals.mysql;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.airbyte.commons.json.Jsons;
 import io.airbyte.db.jdbc.JdbcDatabase;
 import io.airbyte.integrations.debezium.CdcTargetPosition;
+import io.airbyte.integrations.debezium.internals.ChangeEventWithMetadata;
 import io.airbyte.integrations.debezium.internals.SnapshotMetadata;
 import java.sql.SQLException;
 import java.util.List;
@@ -68,16 +70,15 @@ public class MySqlCdcTargetPosition implements CdcTargetPosition<MySqlCdcPositio
   }
 
   @Override
-  public boolean reachedTargetPosition(final JsonNode valueAsJson) {
-    final String eventFileName = valueAsJson.get("source").get("file").asText();
-    final SnapshotMetadata snapshotMetadata = SnapshotMetadata.fromString(valueAsJson.get("source").get("snapshot").asText());
-    if (SnapshotMetadata.isSnapshotEventMetadata(snapshotMetadata)) {
+  public boolean reachedTargetPosition(final ChangeEventWithMetadata changeEventWithMetadata) {
+    if (changeEventWithMetadata.isSnapshotEvent()) {
       return false;
-    } else if (SnapshotMetadata.LAST == snapshotMetadata) {
+    } else if (SnapshotMetadata.LAST == changeEventWithMetadata.snapshotMetadata()) {
       LOGGER.info("Signalling close because Snapshot is complete");
       return true;
     } else {
-      final long eventPosition = valueAsJson.get("source").get("pos").asLong();
+      final String eventFileName = changeEventWithMetadata.eventValueAsJson().get("source").get("file").asText();
+      final long eventPosition = changeEventWithMetadata.eventValueAsJson().get("source").get("pos").asLong();
       final boolean isEventPositionAfter =
           eventFileName.compareTo(targetPosition.fileName) > 0 || (eventFileName.compareTo(
               targetPosition.fileName) == 0 && eventPosition >= targetPosition.position);
@@ -101,6 +102,43 @@ public class MySqlCdcTargetPosition implements CdcTargetPosition<MySqlCdcPositio
   @Override
   public boolean isHeartbeatSupported() {
     return true;
+  }
+
+  @Override
+  public boolean isEventAheadOffset(final Map<String, String> offset, final ChangeEventWithMetadata event) {
+    if (offset.size() != 1) {
+      return false;
+    }
+
+    final String eventFileName = event.eventValueAsJson().get("source").get("file").asText();
+    final long eventPosition = event.eventValueAsJson().get("source").get("pos").asLong();
+
+    final JsonNode offsetJson = Jsons.deserialize((String) offset.values().toArray()[0]);
+
+    final String offsetFileName = offsetJson.get("file").asText();
+    final long offsetPosition = offsetJson.get("pos").asLong();
+    if (eventFileName.compareTo(offsetFileName) != 0) {
+      return eventFileName.compareTo(offsetFileName) > 0;
+    }
+
+    return eventPosition > offsetPosition;
+  }
+
+  @Override
+  public boolean isSameOffset(final Map<String, String> offsetA, final Map<String, String> offsetB) {
+    if ((offsetA == null || offsetA.size() != 1) || (offsetB == null || offsetB.size() != 1)) {
+      return false;
+    }
+
+    final JsonNode offsetJsonA = Jsons.deserialize((String) offsetA.values().toArray()[0]);
+    final String offsetAFileName = offsetJsonA.get("file").asText();
+    final long offsetAPosition = offsetJsonA.get("pos").asLong();
+
+    final JsonNode offsetJsonB = Jsons.deserialize((String) offsetB.values().toArray()[0]);
+    final String offsetBFileName = offsetJsonB.get("file").asText();
+    final long offsetBPosition = offsetJsonB.get("pos").asLong();
+
+    return offsetAFileName.equals(offsetBFileName) && offsetAPosition == offsetBPosition;
   }
 
   @Override
