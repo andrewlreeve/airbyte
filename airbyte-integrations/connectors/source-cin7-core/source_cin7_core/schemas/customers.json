@@ -3,7 +3,8 @@
     "type": "object",
     "properties": {
         "ID": {
-            "type": ["null", "string"]
+            "type": "string",
+             "format": "uuid"
         },
         "Name": {
             "type": ["null", "string"]
@@ -87,7 +88,7 @@
             "type": ["null", "string"]
         },
         "LastModifiedOn": {
-            "type": ["null", "string"]
+            "type": ["null", "date-time"]
         },
         "IsOnCreditHold": {
             "type": ["null", "boolean"]

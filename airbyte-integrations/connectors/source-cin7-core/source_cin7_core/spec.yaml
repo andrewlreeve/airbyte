@@ -9,8 +9,22 @@ connectionSpecification:
   properties:
     account_id:
       type: string
+      title: Account ID
       description: Account ID for your Cin7 Core account.
     api_key:
       type: string
+      title: API Key
       description: API key for your account 
       airbyte_secret: true
+    sales_created_since:
+      type: string
+      title: Sales Created Since
+      pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}$
+      description: >-
+        UTC date in the format 2017-01-25. Only sales generated
+        after this date will be replicated. Usefull if using the
+        detailed sales endpoint. The Cin7 API is limited to 60
+        detailed sales fetched per minute.
+      examples:
+        - "2017-01-25"
+      format: date
