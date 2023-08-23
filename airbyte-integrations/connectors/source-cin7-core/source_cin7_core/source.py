@@ -5,6 +5,7 @@
 from abc import ABC
 from typing import Any, Iterable, List, Mapping, MutableMapping, Optional, Tuple
 
+import pendulum
 import requests
 from requests.auth import AuthBase
 from airbyte_cdk.models import SyncMode 
@@ -41,15 +42,13 @@ class Cin7CoreStream(HttpStream, ABC):
 
 # Basic incremental stream
 class IncrementalCin7CoreStream(Cin7CoreStream, ABC):
-    state_checkpoint_interval = 1000
-
     @property
     def cursor_field(self) -> str:
         return True
 
     def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
-        current = current_stream_state.get(self.cursor_field, 0)
-        latest = latest_record.get(self.cursor_field)
+        current = current_stream_state.get(self.cursor_field, "")
+        latest = latest_record.get(self.cursor_field, "")
 
         return {
             self.cursor_field: max(current, latest)
@@ -67,7 +66,7 @@ class Customers(Cin7CoreStream):
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
     ) -> MutableMapping[str, Any]:
-        params = { "limit": 1000, "IncludeDeprecated": True }
+        params = { "limit": 1000, "IncludeDeprecated": "true" }
 
         if next_page_token:
             params.update(next_page_token)
@@ -89,10 +88,10 @@ class Customers(Cin7CoreStream):
 
 
 class Sales(IncrementalCin7CoreStream):
-    cursor_field = "UpdatedSince"
+    cursor_field = "Updated"
     primary_key = "SaleID"
     use_cache = True
-
+    state_checkpoint_interval = 1000
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(**kwargs)
@@ -103,6 +102,16 @@ class Sales(IncrementalCin7CoreStream):
     ) -> str:
         return "saleList"
 
+    def stream_slices(self, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
+        if not stream_state:
+            stream_state = {}
+
+        from_date = pendulum.parse(stream_state.get(self.cursor_field, self.sales_created_since))
+        if from_date > pendulum.now():
+            yield None
+        else:
+            yield {"UpdatedSince": from_date}
+
     def request_params(
             self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None, start_date: str = None
     ) -> MutableMapping[str, Any]:
@@ -112,16 +121,10 @@ class Sales(IncrementalCin7CoreStream):
         if next_page_token:
             params.update(next_page_token)
 
+        if stream_slice:
+            params.update(stream_slice)
+
         return params
-
-    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
-        start = self.sales_created_since
-        current = current_stream_state.get(self.cursor_field, "")
-        latest = latest_record.get(self.cursor_field, "")
-
-        return {
-            self.cursor_field: max(current, latest, start)
-        }
 
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
         if response.json():
@@ -140,6 +143,9 @@ class Sales(IncrementalCin7CoreStream):
 
 class SaleDetails(HttpSubStream, Sales):
     primary_key = "ID"
+    cursor_field = "LastModifiedOn"
+    use_cache = True
+    state_checkpoint_interval = 60
 
     def __init__(self, **kwargs):
         super().__init__(Sales(**kwargs), **kwargs)
@@ -148,6 +154,15 @@ class SaleDetails(HttpSubStream, Sales):
         self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> str:
         return "sale"
+
+    def stream_slices(self, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
+        parent_stream_state = None
+
+        if stream_state:
+            parent_stream_state = {"Updated": stream_state["LastModifiedOn"]}
+
+        for slice in HttpSubStream.stream_slices(self, stream_state=parent_stream_state, **kwargs):
+            yield slice 
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any], **kwargs
@@ -207,7 +222,7 @@ class Products(Cin7CoreStream):
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
     ) -> MutableMapping[str, Any]:
-        params = { "limit": 1000 }
+        params = { "limit": 1000, "IncludeDeprecated": "true" }
 
         if next_page_token:
             params.update(next_page_token)
