@@ -109,7 +109,7 @@ class Customers(Cin7CoreStream):
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
     ) -> MutableMapping[str, Any]:
-        params = { "limit": 1000 }
+        params = { "limit": 1000, "IncludeDeprecated": True }
 
         if next_page_token:
             params.update(next_page_token)
