@@ -140,6 +140,70 @@ class Sales(IncrementalCin7CoreStream):
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         return response.json()["SaleList"]
 
+class Products(Cin7CoreStream):
+    primary_key = "ID"
+
+    def path(
+        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> str:
+        return "product"
+
+    def request_params(
+        self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> MutableMapping[str, Any]:
+        params = { "limit": 1000, "IncludeDeprecated": "true" }
+
+        if next_page_token:
+            params.update(next_page_token)
+
+        return params
+
+    def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
+        if response.json():
+            total_records = response.json()["Total"]
+            current_page = response.json()["Page"]
+
+            if current_page < total_records / 1000:
+                return {"page": current_page + 1}
+
+        return None
+
+
+    def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
+        return response.json()["Products"]
+
+class ProductAvailability(Cin7CoreStream):
+    primary_key = "ID"
+
+    def path(
+        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> str:
+        return "ref/productavailability"
+
+    def request_params(
+        self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> MutableMapping[str, Any]:
+        params = { "limit": 1000 }
+
+        if next_page_token:
+            params.update(next_page_token)
+
+        return params
+
+    def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
+        if response.json():
+            total_records = response.json()["Total"]
+            current_page = response.json()["Page"]
+
+            if current_page < total_records / 1000:
+                return {"page": current_page + 1}
+
+        return None
+
+
+    def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
+        return response.json()["ProductAvailabilityList"]
+
 
 class SaleDetails(HttpSubStream, Sales):
     primary_key = "ID"
@@ -211,39 +275,6 @@ class SaleCreditNotes(Cin7CoreStream):
         return response.json()["SaleList"]
 
 
-class Products(Cin7CoreStream):
-    primary_key = "ID"
-
-    def path(
-        self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> str:
-        return "product"
-
-    def request_params(
-        self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
-    ) -> MutableMapping[str, Any]:
-        params = { "limit": 1000, "IncludeDeprecated": "true" }
-
-        if next_page_token:
-            params.update(next_page_token)
-
-        return params
-
-    def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
-        if response.json():
-            total_records = response.json()["Total"]
-            current_page = response.json()["Page"]
-
-            if current_page < total_records / 1000:
-                return {"page": current_page + 1}
-
-        return None
-
-
-    def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
-        return response.json()["Products"]
-
-
 # Connnection class
 # TODO: extract to own file
 class Cin7TokenAuthenticator(AuthBase):
@@ -288,4 +319,11 @@ class SourceCin7Core(AbstractSource):
 
     def streams(self, config: Mapping[str, Any]) -> List[Stream]:
         auth = Cin7TokenAuthenticator(config)
-        return [Customers(authenticator=auth), Sales(authenticator=auth, config=config), SaleDetails(config=config, authenticator=auth), SaleCreditNotes(authenticator=auth), Products(authenticator=auth)]
+        return [
+                Customers(authenticator=auth),
+                Products(authenticator=auth),
+                ProductAvailability(authenticator=auth),
+                Sales(authenticator=auth, config=config),
+                SaleDetails(config=config, authenticator=auth),
+                SaleCreditNotes(authenticator=auth)
+                ]
