@@ -4,11 +4,11 @@
 
 package io.airbyte.integrations.destination.starburst_galaxy;
 
+import static io.airbyte.cdk.db.factory.DSLContextFactory.create;
+import static io.airbyte.cdk.db.jdbc.JdbcUtils.getDefaultJSONFormat;
+import static io.airbyte.cdk.integrations.base.JavaBaseConstants.COLUMN_NAME_EMITTED_AT;
+import static io.airbyte.cdk.integrations.destination.s3.util.AvroRecordHelper.pruneAirbyteJson;
 import static io.airbyte.commons.json.Jsons.deserialize;
-import static io.airbyte.db.factory.DSLContextFactory.create;
-import static io.airbyte.db.jdbc.JdbcUtils.getDefaultJSONFormat;
-import static io.airbyte.integrations.base.JavaBaseConstants.COLUMN_NAME_EMITTED_AT;
-import static io.airbyte.integrations.destination.s3.util.AvroRecordHelper.pruneAirbyteJson;
 import static io.airbyte.integrations.destination.starburst_galaxy.StarburstGalaxyBaseDestination.getGalaxyConnectionString;
 import static io.airbyte.integrations.destination.starburst_galaxy.StarburstGalaxyConstants.STARBURST_GALAXY_DRIVER_CLASS;
 import static io.airbyte.protocol.models.v0.AirbyteMessage.Type.RECORD;
@@ -25,16 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
+import io.airbyte.cdk.db.ContextQueryFunction;
+import io.airbyte.cdk.db.Database;
+import io.airbyte.cdk.integrations.base.AirbyteMessageConsumer;
+import io.airbyte.cdk.integrations.base.Destination;
+import io.airbyte.cdk.integrations.destination.StandardNameTransformer;
+import io.airbyte.cdk.integrations.destination.jdbc.copy.StreamCopierFactory;
+import io.airbyte.cdk.integrations.destination.s3.avro.JsonFieldNameUpdater;
+import io.airbyte.cdk.integrations.destination.s3.util.AvroRecordHelper;
+import io.airbyte.cdk.integrations.standardtest.destination.DestinationAcceptanceTest;
 import io.airbyte.commons.json.Jsons;
-import io.airbyte.db.ContextQueryFunction;
-import io.airbyte.db.Database;
-import io.airbyte.integrations.base.AirbyteMessageConsumer;
-import io.airbyte.integrations.base.Destination;
-import io.airbyte.integrations.destination.StandardNameTransformer;
-import io.airbyte.integrations.destination.jdbc.copy.StreamCopierFactory;
-import io.airbyte.integrations.destination.s3.avro.JsonFieldNameUpdater;
-import io.airbyte.integrations.destination.s3.util.AvroRecordHelper;
-import io.airbyte.integrations.standardtest.destination.DestinationAcceptanceTest;
 import io.airbyte.protocol.models.v0.AirbyteMessage;
 import io.airbyte.protocol.models.v0.AirbyteRecordMessage;
 import io.airbyte.protocol.models.v0.AirbyteStream;
@@ -186,7 +186,11 @@ public abstract class StarburstGalaxyDestinationAcceptanceTest extends Destinati
     testDifferentTypes("sample_stream_3", "datatypeV1.json", "dataV1.json", "expected-datatypeV1.json", "expected-dataV1.json");
   }
 
-  private void testDifferentTypes(final String streamName, final String dataTypeFile, final String dataFile, final String expectedDataTypeFile, final String expectedDataFile)
+  private void testDifferentTypes(final String streamName,
+                                  final String dataTypeFile,
+                                  final String dataFile,
+                                  final String expectedDataTypeFile,
+                                  final String expectedDataFile)
       throws Exception {
 
     final JsonNode datatypeSchema = getTestDataFromResourceJson(dataTypeFile);
@@ -225,7 +229,8 @@ public abstract class StarburstGalaxyDestinationAcceptanceTest extends Destinati
         .withSyncMode(FULL_REFRESH).withDestinationSyncMode(destinationSyncMode)));
   }
 
-  private static void runDestinationWrite(final ConfiguredAirbyteCatalog catalog, final JsonNode config, final AirbyteMessage... messages) throws Exception {
+  private static void runDestinationWrite(final ConfiguredAirbyteCatalog catalog, final JsonNode config, final AirbyteMessage... messages)
+      throws Exception {
     final StarburstGalaxyDestination destination = new StarburstGalaxyDestination();
     final AirbyteMessageConsumer consumer = destination.getConsumer(config, catalog, Destination::defaultOutputRecordCollector);
     consumer.start();
