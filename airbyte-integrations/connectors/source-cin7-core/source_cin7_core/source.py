@@ -90,6 +90,7 @@ class Customers(Cin7CoreStream):
 class Sales(IncrementalCin7CoreStream):
     cursor_field = "Updated"
     primary_key = "SaleID"
+    use_cache = True
     state_checkpoint_interval = 1000
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
@@ -206,6 +207,8 @@ class ProductAvailability(Cin7CoreStream):
 
 class SaleDetails(HttpSubStream, Sales):
     primary_key = "ID"
+    cursor_field = "LastModifiedOn"
+    use_cache = True
     state_checkpoint_interval = 60
 
     def __init__(self, **kwargs):
@@ -215,6 +218,15 @@ class SaleDetails(HttpSubStream, Sales):
         self, stream_state: Mapping[str, Any] = None, stream_slice: Mapping[str, Any] = None, next_page_token: Mapping[str, Any] = None
     ) -> str:
         return "sale"
+
+    def stream_slices(self, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
+        parent_stream_state = None
+
+        if stream_state:
+            parent_stream_state = {"Updated": stream_state["LastModifiedOn"]}
+
+        for slice in HttpSubStream.stream_slices(self, stream_state=parent_stream_state, **kwargs):
+            yield slice 
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any], **kwargs
