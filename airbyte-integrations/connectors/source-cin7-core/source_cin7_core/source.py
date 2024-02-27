@@ -27,9 +27,9 @@ class Cin7CoreStream(HttpStream, ABC):
     
     def backoff_time(self, response: requests.Response) -> Optional[float]:
         """
-        Back off for 61 seconds which is above the current timeout of 60 seconds for the API
+        Back off for 64 seconds which is above the current timeout of 60 seconds for the API
         """
-        return 61
+        return 64
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
@@ -90,8 +90,6 @@ class Customers(Cin7CoreStream):
 class Sales(IncrementalCin7CoreStream):
     cursor_field = "Updated"
     primary_key = "SaleID"
-    use_cache = True
-    state_checkpoint_interval = 1000
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(**kwargs)
@@ -208,8 +206,6 @@ class ProductAvailability(Cin7CoreStream):
 class SaleDetails(HttpSubStream, Sales):
     primary_key = "ID"
     cursor_field = "LastModifiedOn"
-    use_cache = True
-    state_checkpoint_interval = 60
 
     def __init__(self, **kwargs):
         super().__init__(Sales(**kwargs), **kwargs)
