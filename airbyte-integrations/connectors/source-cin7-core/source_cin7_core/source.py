@@ -27,9 +27,9 @@ class Cin7CoreStream(HttpStream, ABC):
     
     def backoff_time(self, response: requests.Response) -> Optional[float]:
         """
-        Back off for 64 seconds which is above the current timeout of 60 seconds for the API
+        Back off for 61 seconds which is above the current timeout of 60 seconds for the API
         """
-        return 64
+        return 61
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
@@ -90,6 +90,7 @@ class Customers(Cin7CoreStream):
 class Sales(IncrementalCin7CoreStream):
     cursor_field = "Updated"
     primary_key = "SaleID"
+    deduplication_buffer_minutes = 1
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(**kwargs)
@@ -215,21 +216,19 @@ class SaleDetails(HttpSubStream, Sales):
     ) -> str:
         return "sale"
 
-    def stream_slices(self, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
-        parent_stream_state = None
-
-        if stream_state:
-            parent_stream_state = {"Updated": stream_state["LastModifiedOn"]}
-
-        for slice in HttpSubStream.stream_slices(self, stream_state=parent_stream_state, **kwargs):
-            yield slice 
+    def stream_slices(self, sync_mode, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
+        if sync_mode == SyncMode.full_refresh:
+            yield from super().stream_slices(stream_state, **kwargs)
+        else:  # incremental sync
+            for slice in super().stream_slices(stream_state, **kwargs):
+                slice["LastModifiedOn"] = slice["parent"]["Updated"] # map parent Updated to LastModifiedOn
+                if slice.get("LastModifiedOn") > stream_state.get(self.cursor_field, ""):
+                    yield slice
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any], **kwargs
     ) -> MutableMapping[str, Any]:
-        params = { "ID": stream_slice["parent"]["SaleID"] }
-
-        return params
+        return { "ID": stream_slice["parent"]["SaleID"] }
 
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
         return None
