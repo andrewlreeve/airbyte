@@ -90,7 +90,6 @@ class Customers(Cin7CoreStream):
 class Sales(IncrementalCin7CoreStream):
     cursor_field = "Updated"
     primary_key = "SaleID"
-    deduplication_buffer_minutes = 1
 
     def __init__(self, config: Mapping[str, Any], **kwargs):
         super().__init__(**kwargs)
