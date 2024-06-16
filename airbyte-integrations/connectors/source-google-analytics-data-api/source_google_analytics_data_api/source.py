@@ -47,7 +47,7 @@ from .utils import (
 # the initial values should be saved once and tracked for each stream, inclusively.
 GoogleAnalyticsQuotaHandler: GoogleAnalyticsApiQuota = GoogleAnalyticsApiQuota()
 
-LOOKBACK_WINDOW = datetime.timedelta(days=2)
+DEFAULT_LOOKBACK_WINDOW = 2
 
 
 class ConfigurationError(Exception):
@@ -283,7 +283,15 @@ class GoogleAnalyticsDataApiBaseStream(GoogleAnalyticsDataApiAbstractStream):
                 record["endDate"] = stream_slice["endDate"]
             yield record
 
-    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]):
+    def get_updated_state(
+        self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]
+    ) -> MutableMapping[str, Any]:
+        if not self.cursor_field:
+            # Some implementations of the GoogleAnalyticsDataApiBaseStream might not have a cursor because it's
+            # based on the `dimensions` config setting. This results in a full_refresh only stream that implements
+            # get_updated_state(), but does not define a cursor. For this scenario, there is no state value to extract
+            return {}
+
         updated_state = (
             utils.string_to_date(latest_record[self.cursor_field], self._record_date_format)
             if self.cursor_field == "date"
@@ -341,7 +349,7 @@ class GoogleAnalyticsDataApiBaseStream(GoogleAnalyticsDataApiAbstractStream):
                 serialize_to_date_string(start_date, DATE_FORMAT, self.cursor_field) if not self.cursor_field == "date" else start_date
             )
             start_date = utils.string_to_date(start_date, self._record_date_format, old_format=DATE_FORMAT)
-            start_date -= LOOKBACK_WINDOW
+            start_date = start_date - datetime.timedelta(days=self.config.get("lookback_window", DEFAULT_LOOKBACK_WINDOW))
             start_date = max(start_date, self.config["date_ranges_start_date"])
         else:
             start_date = self.config["date_ranges_start_date"]
